@@ -1,12 +1,18 @@
 import React, { createRef, useMemo } from "react";
-import { Color, InstancedMesh, Object3D } from "three";
+import { Color, ColorRepresentation, InstancedMesh, Object3D } from "three";
 import { useFrame } from "@react-three/fiber";
 
 interface PointCloudProps {
   positions: [number, number, number][];
+  color?: ColorRepresentation;
+  pointSize?: number;
 }
 
-export const PointCloud = ({ positions }: PointCloudProps) => {
+export const PointCloud = ({
+  positions,
+  color = "#00ff00",
+  pointSize = 0.2,
+}: PointCloudProps) => {
   const meshRef = createRef<InstancedMesh>();
 
   const tempObject = new Object3D();
@@ -17,9 +23,9 @@ export const PointCloud = ({ positions }: PointCloudProps) => {
       Float32Array.from(
         new Array(positions.length)
           .fill(0)
-          .flatMap((_, i) => tempColor.set("#00ff00").toArray()),
+          .flatMap((_, i) => tempColor.set(color).toArray()),
       ),
-    [],
+    [color, positions.length],
   );
 
   useFrame((state) => {
@@ -37,7 +43,7 @@ export const PointCloud = ({ positions }: PointCloudProps) => {
       ref={meshRef}
       args={[undefined, undefined, positions.length]}
     >
-      <sphereGeometry args={[0.2, 32, 16]}>
+      <sphereGeometry args={[pointSize, 32, 16]}>
         <instancedBufferAttribute
           attach="attributes-color"
           args={[colorArray, 3]}

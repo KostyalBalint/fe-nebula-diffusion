@@ -13,23 +13,16 @@ extend({ SSAOPass, UnrealBloomPass });
 
 export interface View3DProps {}
 
-const PostProcessing = () => {
-  const { scene, camera } = useThree();
-  return (
-    <Effects disableGamma>
-      {/*@ts-ignore*/}
-      <sSAOPass args={[scene, camera]} kernelRadius={0.5} maxDistance={0.1} />
-    </Effects>
-  );
-};
-
 export function View3D(props: View3DProps): ReactElement {
-  const pointCloudData: [number, number, number][] = [
-    [1, 1, 1],
-    [2, 2, 2],
-    [3, 3, 3],
-    // Add more points as needed
-  ];
+  const pointCloudData: [number, number, number][] = Array.from({
+    length: 10,
+  }).map(() => {
+    return [
+      Math.random() * 10 - 5,
+      Math.random() * 10 - 5,
+      Math.random() * 10 - 5,
+    ];
+  });
 
   return (
     <div className="h-full relative">
@@ -43,13 +36,17 @@ export function View3D(props: View3DProps): ReactElement {
       >
         <Suspense fallback={null}>
           <scene>
-            <Perf />
+            <Perf position="top-left" />
             <Environment files={"assets/quattro_canti_1k.hdr"}>
               <ambientLight intensity={1} />
             </Environment>
             <color attach="background" args={["#dadada"]} />
 
-            <PointCloud positions={pointCloudData} />
+            <PointCloud
+              positions={pointCloudData}
+              color="red"
+              pointSize={0.1}
+            />
 
             <AxesHelper
               length={2}
@@ -59,7 +56,6 @@ export function View3D(props: View3DProps): ReactElement {
             <BasePlane />
             <CameraControls
               smoothTime={0.05}
-              maxPolarAngle={(80 / 180) * Math.PI}
               minDistance={5}
               maxDistance={60}
             />
