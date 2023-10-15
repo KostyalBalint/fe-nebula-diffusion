@@ -1,4 +1,4 @@
-import React, { ReactElement, Suspense } from "react";
+import React, { ReactElement, Suspense, useMemo } from "react";
 import { Canvas, extend, useThree } from "@react-three/fiber";
 import { Vector3 } from "three";
 import { CameraControls, Effects, Environment } from "@react-three/drei";
@@ -8,21 +8,28 @@ import { AxesHelper } from "./helpers/AxesHelper";
 import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Perf } from "r3f-perf";
+import { useSettings } from "../../providers/SettingsProvider";
 
 extend({ SSAOPass, UnrealBloomPass });
 
 export interface View3DProps {}
 
 export function View3D(props: View3DProps): ReactElement {
-  const pointCloudData: [number, number, number][] = Array.from({
-    length: 10,
-  }).map(() => {
-    return [
-      Math.random() * 10 - 5,
-      Math.random() * 10 - 5,
-      Math.random() * 10 - 5,
-    ];
-  });
+  const settings = useSettings();
+
+  const pointCloudData: [number, number, number][] = useMemo(
+    () =>
+      Array.from({
+        length: 10_000,
+      }).map(() => {
+        return [
+          Math.random() * 10 - 5,
+          Math.random() * 10 - 5,
+          Math.random() * 10 - 5,
+        ];
+      }),
+    [],
+  );
 
   return (
     <div className="h-full relative">
@@ -45,14 +52,16 @@ export function View3D(props: View3DProps): ReactElement {
             <PointCloud
               positions={pointCloudData}
               color="red"
-              pointSize={0.1}
+              pointSize={settings.sphereRadius}
             />
 
-            <AxesHelper
-              length={2}
-              thickness={0.02}
-              arrowPos={new Vector3(0, 0, 0)}
-            />
+            {settings.showAxisHelper && (
+              <AxesHelper
+                length={2}
+                thickness={0.02}
+                arrowPos={new Vector3(0, 0, 0)}
+              />
+            )}
             <BasePlane />
             <CameraControls
               smoothTime={0.05}

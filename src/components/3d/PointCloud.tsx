@@ -43,7 +43,7 @@ export const PointCloud = ({
       ref={meshRef}
       args={[undefined, undefined, positions.length]}
     >
-      <sphereGeometry args={[pointSize, 32, 16]}>
+      <sphereGeometry args={[pointSize, 8, 8]}>
         <instancedBufferAttribute
           attach="attributes-color"
           args={[colorArray, 3]}
