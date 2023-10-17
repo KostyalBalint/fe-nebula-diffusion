@@ -1,7 +1,16 @@
 import React, { createContext, useContext, useState } from "react";
 import { config } from "../config";
 
-type RawPointCloud = [number, number, number][];
+// [X, Y, Z, R, G, B, A]
+export type RawPointCloud = [
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+][];
 
 interface PointCloudContextProps {
   pointCloud: RawPointCloud;

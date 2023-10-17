@@ -52,7 +52,7 @@ export function View3D(props: View3DProps): ReactElement {
             <color attach="background" args={["#dadada"]} />
 
             <PointCloud
-              positions={pointCloud}
+              points={pointCloud}
               color="#3266a8"
               pointSize={settings.sphereRadius}
             />

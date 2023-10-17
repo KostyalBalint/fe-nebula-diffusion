@@ -1,14 +1,15 @@
 import React, { createRef, useEffect, useMemo } from "react";
 import { Color, ColorRepresentation, InstancedMesh, Object3D } from "three";
+import { RawPointCloud } from "../../providers/PointCloudProvider";
 
 interface PointCloudProps {
-  positions: [number, number, number][];
+  points: RawPointCloud;
   color?: ColorRepresentation;
   pointSize?: number;
 }
 
 export const PointCloud = ({
-  positions,
+  points,
   color = "#0000ff",
   pointSize = 0.2,
 }: PointCloudProps) => {
@@ -20,29 +21,32 @@ export const PointCloud = ({
   const colorArray = useMemo(
     () =>
       Float32Array.from(
-        new Array(positions.length)
-          .fill(0)
-          .flatMap((_, i) => tempColor.set(color).toArray()),
+        new Array(points.length).fill(0).flatMap((_, i) => {
+          const colorAtPos = points[i].slice(3, 6);
+          if (
+            colorAtPos.length < 3 ||
+            (colorAtPos[0] === 0 && colorAtPos[1] === 0 && colorAtPos[2] === 0)
+          )
+            return tempColor.set(color).toArray();
+          return tempColor.fromArray(colorAtPos.map((c) => c / 255)).toArray();
+        }),
       ),
-    [color, positions.length],
+    [points, color],
   );
 
   useEffect(() => {
     let i = 0;
-    positions.forEach(([x, y, z]) => {
+    points.forEach(([x, y, z]) => {
       const id = i++;
       tempObject.position.set(x, y, z);
       tempObject.updateMatrix();
       if (meshRef.current) meshRef.current.setMatrixAt(id, tempObject.matrix);
     });
     if (meshRef.current) meshRef.current.instanceMatrix.needsUpdate = true;
-  }, [positions]);
+  }, [points]);
 
   return (
-    <instancedMesh
-      ref={meshRef}
-      args={[undefined, undefined, positions.length]}
-    >
+    <instancedMesh ref={meshRef} args={[undefined, undefined, points.length]}>
       <sphereGeometry args={[pointSize, 8, 8]}>
         <instancedBufferAttribute
           attach="attributes-color"
