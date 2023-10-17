@@ -1,7 +1,7 @@
-import React, { ReactElement, Suspense, useMemo } from "react";
-import { Canvas, extend, useThree } from "@react-three/fiber";
+import React, { ReactElement, Suspense } from "react";
+import { Canvas, extend } from "@react-three/fiber";
 import { Vector3 } from "three";
-import { CameraControls, Effects, Environment } from "@react-three/drei";
+import { CameraControls, Environment } from "@react-three/drei";
 import { BasePlane } from "./BasePlane";
 import { PointCloud } from "./PointCloud";
 import { AxesHelper } from "./helpers/AxesHelper";
@@ -9,6 +9,7 @@ import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Perf } from "r3f-perf";
 import { useSettings } from "../../providers/SettingsProvider";
+import { usePointCloud } from "../../providers/PointCloudProvider";
 
 extend({ SSAOPass, UnrealBloomPass });
 
@@ -16,8 +17,9 @@ export interface View3DProps {}
 
 export function View3D(props: View3DProps): ReactElement {
   const settings = useSettings();
+  const { pointCloud } = usePointCloud();
 
-  const pointCloudData: [number, number, number][] = useMemo(
+  /*const pointCloudData: [number, number, number][] = useMemo(
     () =>
       Array.from({
         length: 10_000,
@@ -28,8 +30,8 @@ export function View3D(props: View3DProps): ReactElement {
           Math.random() * 10 - 5,
         ];
       }),
-    [],
-  );
+    [settings.generationId],
+  );*/
 
   return (
     <div className="h-full relative">
@@ -50,8 +52,8 @@ export function View3D(props: View3DProps): ReactElement {
             <color attach="background" args={["#dadada"]} />
 
             <PointCloud
-              positions={pointCloudData}
-              color="red"
+              positions={pointCloud}
+              color="#3266a8"
               pointSize={settings.sphereRadius}
             />
 

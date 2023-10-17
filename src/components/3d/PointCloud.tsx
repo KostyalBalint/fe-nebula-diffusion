@@ -1,6 +1,5 @@
-import React, { createRef, useMemo } from "react";
+import React, { createRef, useEffect, useMemo } from "react";
 import { Color, ColorRepresentation, InstancedMesh, Object3D } from "three";
-import { useFrame } from "@react-three/fiber";
 
 interface PointCloudProps {
   positions: [number, number, number][];
@@ -10,7 +9,7 @@ interface PointCloudProps {
 
 export const PointCloud = ({
   positions,
-  color = "#00ff00",
+  color = "#0000ff",
   pointSize = 0.2,
 }: PointCloudProps) => {
   const meshRef = createRef<InstancedMesh>();
@@ -28,7 +27,7 @@ export const PointCloud = ({
     [color, positions.length],
   );
 
-  useFrame((state) => {
+  useEffect(() => {
     let i = 0;
     positions.forEach(([x, y, z]) => {
       const id = i++;
@@ -37,7 +36,8 @@ export const PointCloud = ({
       if (meshRef.current) meshRef.current.setMatrixAt(id, tempObject.matrix);
     });
     if (meshRef.current) meshRef.current.instanceMatrix.needsUpdate = true;
-  });
+  }, [positions]);
+
   return (
     <instancedMesh
       ref={meshRef}
