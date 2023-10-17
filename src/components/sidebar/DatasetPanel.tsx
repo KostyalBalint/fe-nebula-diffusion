@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { usePointCloud } from "../../providers/PointCloudProvider";
 
 export const DatasetPanel = () => {
-  const { fetchPointCloud } = usePointCloud();
+  const { fetchPointCloud, annotation } = usePointCloud();
   const [uid, setUid] = useState<string>("a14bfdca48344226884b93d6315d57c2");
 
   return (
@@ -24,6 +24,22 @@ export const DatasetPanel = () => {
           Get by UID
         </button>
       </div>
+      {annotation.data && (
+        <>
+          <p className="text-blue-600 my-1 text-2xl ">Name</p>
+          <p className="text-gray-800 ml-2 mb-3">{annotation.data.name}</p>
+          <p className="text-blue-600 my-1 text-2xl ">Description</p>
+          <p className="text-gray-800 ml-2 mb-3">
+            {annotation.data.description}
+          </p>
+          <p className="text-blue-600 my-1 text-2xl">Image</p>
+          <img
+            alt={annotation.data.name}
+            className="rounded-lg shadow-lg"
+            src={annotation.data.thumbnails.images[0].url ?? ""}
+          />
+        </>
+      )}
     </div>
   );
 };
