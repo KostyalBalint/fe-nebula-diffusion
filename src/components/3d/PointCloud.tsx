@@ -31,6 +31,7 @@ export const PointCloud = ({
           return tempColor.fromArray(colorAtPos.map((c) => c / 255)).toArray();
         }),
       ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [points, color],
   );
 
@@ -43,6 +44,7 @@ export const PointCloud = ({
       if (meshRef.current) meshRef.current.setMatrixAt(id, tempObject.matrix);
     });
     if (meshRef.current) meshRef.current.instanceMatrix.needsUpdate = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [points]);
 
   return (

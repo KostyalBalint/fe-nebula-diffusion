@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 type TabProps = { hover?: boolean; selected?: boolean; onClick?: () => void };
 
