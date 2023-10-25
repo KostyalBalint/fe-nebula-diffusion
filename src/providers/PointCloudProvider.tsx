@@ -22,6 +22,9 @@ interface PointCloudContextProps {
   };
   fetchPointCloud: (uid: string) => void;
   searchObject: (query: string) => Promise<SearchResult[]>;
+  generatePointCloud: () => void;
+  isGenerating: boolean;
+  stopGeneration: () => void;
 }
 
 const PointCloudContext = createContext<PointCloudContextProps>({
@@ -31,12 +34,18 @@ const PointCloudContext = createContext<PointCloudContextProps>({
     return new Promise(() => {});
   },
   annotation: { loading: false },
+  generatePointCloud: () => {},
+  isGenerating: false,
+  stopGeneration: () => {},
 });
 
 export const PointCloudProvider = (props: React.PropsWithChildren) => {
   const [pointCloud, setPointCloud] = useState<RawPointCloud>([]);
   const [annotation, setAnnotation] = useState<SketchfabModel | null>(null);
   const [loadingAnnotations, setLoadingAnnotations] = useState(false);
+  const [generationEventSource, setGenerationEventSource] =
+    useState<EventSource | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const fetchPointCloud = async (uid: string) => {
     setLoadingAnnotations(true);
@@ -58,6 +67,30 @@ export const PointCloudProvider = (props: React.PropsWithChildren) => {
     });
   };
 
+  const generatePointCloud = async () => {
+    const generationEvent = new EventSource(
+      `${config.backendUrl}/diffusionPointCloud/generate`,
+    );
+    setGenerationEventSource(generationEvent);
+    setIsGenerating(true);
+
+    generationEvent.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log(data);
+      setPointCloud(data);
+    };
+    generationEvent.onerror = () => {
+      setIsGenerating(false);
+    };
+  };
+
+  const stopGeneration = () => {
+    if (generationEventSource) {
+      generationEventSource.close();
+    }
+    setIsGenerating(false);
+  };
+
   return (
     <PointCloudContext.Provider
       value={{
@@ -68,6 +101,9 @@ export const PointCloudProvider = (props: React.PropsWithChildren) => {
         },
         fetchPointCloud,
         searchObject,
+        generatePointCloud,
+        stopGeneration,
+        isGenerating,
       }}
     >
       {props.children}
