@@ -10,7 +10,7 @@ export const SettingsPanel = () => {
           htmlFor="default-range"
           className="block mb-2 text-sm font-medium text-gray-900"
         >
-          Sphere radius ({settings.sphereRadius.toFixed(2)})
+          Sphere radius ({settings.sphereRadius.toFixed(3)})
         </label>
         <input
           id="default-range"
@@ -19,8 +19,8 @@ export const SettingsPanel = () => {
             settings.setSphereRadius(Number(e.target.value));
           }}
           value={settings.sphereRadius}
-          min={0.01}
-          max={0.5}
+          min={0.001}
+          max={0.3}
           step={0.001}
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
         />

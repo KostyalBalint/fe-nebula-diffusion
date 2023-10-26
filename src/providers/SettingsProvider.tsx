@@ -8,14 +8,14 @@ interface SettingsContextProps {
 }
 
 const SettingsContext = createContext<SettingsContextProps>({
-  sphereRadius: 0.2,
+  sphereRadius: 1,
   setSphereRadius: () => {},
   showAxisHelper: false,
   setShowAxisHelper: () => {},
 });
 
 export const SettingsContextProvider = (props: React.PropsWithChildren) => {
-  const [sphereRadius, setSphereRadius] = useState<number>(0.2);
+  const [sphereRadius, setSphereRadius] = useState<number>(0.03);
   const [showAxisHelper, setShowAxisHelper] = useState<boolean>(false);
 
   return (

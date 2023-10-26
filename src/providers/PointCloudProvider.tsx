@@ -25,6 +25,7 @@ interface PointCloudContextProps {
   generatePointCloud: () => void;
   isGenerating: boolean;
   stopGeneration: () => void;
+  setPointCloud: (pointCloud: RawPointCloud) => void;
 }
 
 const PointCloudContext = createContext<PointCloudContextProps>({
@@ -37,6 +38,7 @@ const PointCloudContext = createContext<PointCloudContextProps>({
   generatePointCloud: () => {},
   isGenerating: false,
   stopGeneration: () => {},
+  setPointCloud: () => {},
 });
 
 export const PointCloudProvider = (props: React.PropsWithChildren) => {
@@ -76,11 +78,11 @@ export const PointCloudProvider = (props: React.PropsWithChildren) => {
 
     generationEvent.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log(data);
       setPointCloud(data);
     };
     generationEvent.onerror = () => {
       setIsGenerating(false);
+      generationEvent.close();
     };
   };
 
@@ -104,6 +106,7 @@ export const PointCloudProvider = (props: React.PropsWithChildren) => {
         generatePointCloud,
         stopGeneration,
         isGenerating,
+        setPointCloud,
       }}
     >
       {props.children}
