@@ -14,6 +14,11 @@ export type RawPointCloud = [
   number,
 ][];
 
+export enum GenerationModel {
+  DiffusionPointCloud = "DiffusionPointCloud",
+  NebulaDiffusion = "NebulaDiffusion",
+}
+
 interface PointCloudContextProps {
   pointCloud: RawPointCloud;
   annotation: {
@@ -22,7 +27,7 @@ interface PointCloudContextProps {
   };
   fetchPointCloud: (uid: string) => void;
   searchObject: (query: string) => Promise<SearchResult[]>;
-  generatePointCloud: () => void;
+  generatePointCloud: (model: GenerationModel, text: string) => void;
   isGenerating: boolean;
   stopGeneration: () => void;
   setPointCloud: (pointCloud: RawPointCloud) => void;
@@ -69,9 +74,11 @@ export const PointCloudProvider = (props: React.PropsWithChildren) => {
     });
   };
 
-  const generatePointCloud = async () => {
+  const generatePointCloud = async (model: GenerationModel, text: string) => {
     const generationEvent = new EventSource(
-      `${config.backendUrl}/diffusionPointCloud/generate`,
+      model === GenerationModel.DiffusionPointCloud
+        ? `${config.backendUrl}/diffusionPointCloud/generate`
+        : `${config.backendUrl}/nebulaDiffusion/generate/${encodeURI(text)}`,
     );
     setGenerationEventSource(generationEvent);
     setIsGenerating(true);

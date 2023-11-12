@@ -1,10 +1,14 @@
 import React, { useState } from "react";
-import { usePointCloud } from "../../providers/PointCloudProvider";
+import {
+  GenerationModel,
+  usePointCloud,
+} from "../../providers/PointCloudProvider";
 import { Tabs } from "../Tabs";
 
 export const GenerationPanel = () => {
   const { generatePointCloud, stopGeneration, isGenerating } = usePointCloud();
   const [selectedModel, setSelectedModel] = useState(0);
+  const [textArea, setTextArea] = useState("");
 
   return (
     <div className="flex flex-col gap-5">
@@ -22,6 +26,8 @@ export const GenerationPanel = () => {
             rows={4}
             className="w-100 p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Write your prompt here..."
+            value={textArea}
+            onChange={(e) => setTextArea(e.target.value)}
           />
         )}
 
@@ -36,7 +42,12 @@ export const GenerationPanel = () => {
             if (isGenerating) {
               stopGeneration();
             } else {
-              generatePointCloud();
+              generatePointCloud(
+                selectedModel === 0
+                  ? GenerationModel.DiffusionPointCloud
+                  : GenerationModel.NebulaDiffusion,
+                textArea,
+              );
             }
           }}
         >
