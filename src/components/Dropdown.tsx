@@ -12,17 +12,16 @@ const DropItem = (props: {
   selected: boolean;
   onClick: () => void;
 }) => (
-  <a
-    href="#"
+  <div
     className={`${
       props.selected ? ' bg-gray-100 text-gray-900" ' : " text-gray-700 "
-    } block px-4 py-2 text-sm`}
+    } block px-4 py-2 text-sm hover:bg-gray-50 hover:text-gray-900 cursor-pointer`}
     role="menuitem"
     id={`menu-item-${props.id}`}
     onClick={props.onClick}
   >
     {props.text}
-  </a>
+  </div>
 );
 
 export const Dropdown = (props: DropDownProps) => {
