@@ -27,7 +27,10 @@ interface PointCloudContextProps {
   };
   fetchPointCloud: (uid: string) => void;
   searchObject: (query: string) => Promise<SearchResult[]>;
-  generatePointCloud: (model: GenerationModel, text: string) => void;
+  generatePointCloud: (
+    model: GenerationModel,
+    text: string | "airplane" | "chair",
+  ) => void;
   isGenerating: boolean;
   stopGeneration: () => void;
   setPointCloud: (pointCloud: RawPointCloud) => void;
@@ -74,10 +77,13 @@ export const PointCloudProvider = (props: React.PropsWithChildren) => {
     });
   };
 
-  const generatePointCloud = async (model: GenerationModel, text: string) => {
+  const generatePointCloud = async (
+    model: GenerationModel,
+    text: string | "airplane" | "chair",
+  ) => {
     const generationEvent = new EventSource(
       model === GenerationModel.DiffusionPointCloud
-        ? `${config.backendUrl}/diffusionPointCloud/generate`
+        ? `${config.backendUrl}/diffusionPointCloud/generate/${text}`
         : `${config.backendUrl}/nebulaDiffusion/generate/${encodeURI(text)}`,
     );
     setGenerationEventSource(generationEvent);
