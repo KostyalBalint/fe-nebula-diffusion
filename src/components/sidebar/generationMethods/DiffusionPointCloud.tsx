@@ -9,12 +9,21 @@ export const DiffusionPointCloud = () => {
   const { generatePointCloud, stopGeneration, isGenerating } = usePointCloud();
   const [selectedModel, setSelectedModel] = useState(0);
 
-  const modelText = selectedModel === 0 ? "airplane" : "chair";
+  const options = [
+    "Airplane - OG",
+    "Chair - OG",
+    "Human - Custom",
+    "Knife - Custom",
+  ];
+  const modelVariant = options[selectedModel]
+    .split("-")[0]
+    .trim()
+    .toLowerCase();
 
   return (
-    <div className="flex flex-row content-between justify-between w-full">
+    <div className="flex flex-row content-between justify-between align-middle w-full">
       <Dropdown
-        options={["Airplane", "Chair"]}
+        options={options}
         selected={selectedModel}
         onChange={setSelectedModel}
       />
@@ -30,7 +39,11 @@ export const DiffusionPointCloud = () => {
           if (isGenerating) {
             stopGeneration();
           } else {
-            generatePointCloud(GenerationModel.DiffusionPointCloud, modelText);
+            generatePointCloud(
+              GenerationModel.DiffusionPointCloud,
+              "",
+              modelVariant,
+            );
           }
         }}
       >

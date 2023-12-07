@@ -40,6 +40,9 @@ export const DatasetPanel = () => {
 
   return (
     <div>
+      <p className="text-blue-600 mb-2 text-center text-xl ">
+        Objaverse dataset
+      </p>
       <TextSearchInput
         title="Text Search"
         textPlaceholder="Search for anything"

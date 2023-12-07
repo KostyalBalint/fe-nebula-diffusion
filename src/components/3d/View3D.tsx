@@ -13,9 +13,7 @@ import { usePointCloud } from "../../providers/PointCloudProvider";
 
 extend({ SSAOPass, UnrealBloomPass });
 
-export interface View3DProps {}
-
-export function View3D(props: View3DProps): ReactElement {
+export function View3D(): ReactElement {
   const settings = useSettings();
   const { pointCloud } = usePointCloud();
 
@@ -67,8 +65,8 @@ export function View3D(props: View3DProps): ReactElement {
             <BasePlane />
             <CameraControls
               smoothTime={0.05}
-              minDistance={5}
-              maxDistance={60}
+              minDistance={1}
+              maxDistance={10}
             />
           </scene>
         </Suspense>
